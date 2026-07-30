@@ -1,6 +1,8 @@
+import AppRouter from "./routes";
+
 function App() {
   return (
-    <h1>SnapAttend</h1>
+    <AppRouter/>
   );
 }
 
