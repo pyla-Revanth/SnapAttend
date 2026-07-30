@@ -9,11 +9,13 @@ ai-service/venv/
 # Node.js
 # =========================
 **/node_modules/
+**/dist/
 
 # =========================
 # Environment Variables
 # =========================
 .env
+**/.env
 
 # =========================
 # Logs
