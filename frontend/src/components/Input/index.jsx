@@ -1,14 +1,17 @@
 function Input({
     id,
+    name,
     label,
     type = "text",
     placeholder,
+    value,
+    onChange,
 }) {
     return (
         <div className="flex flex-col gap-2">
 
             <label
-                htmlFor={label}
+                htmlFor={id}
                 className="
                     font-['Outfit']
                     text-gray-800
@@ -20,7 +23,12 @@ function Input({
             </label>
 
             <input
-                id={label}
+                id={id}
+                name={name}
+                value={value}
+                onChange={onChange}
+                type={type}
+                placeholder={placeholder}
                 className="
                     w-full
                     rounded-xl
@@ -39,8 +47,6 @@ function Input({
                     focus:ring-2
                     focus:ring-[#5865F2]/20
                 "
-                type={type}
-                placeholder={placeholder}
             />
 
         </div>

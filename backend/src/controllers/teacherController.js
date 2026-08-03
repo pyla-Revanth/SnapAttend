@@ -1,4 +1,3 @@
-import { hash } from "bcryptjs";
 import { teacherExists, createTeacher, getTeacherByUsername } from "../services/teacherService.js";
 import { generateToken } from "../utils/jwt.js";
 import { hashPassword, comparePassword } from "../utils/password.js";
@@ -14,7 +13,7 @@ export const registerTeacher = async (req, res) => {
         if(exists){ 
 
             return res.status(409).json({
-                succes : false,
+                success : false,
                 message : "Username already exists"
             });
 
@@ -29,7 +28,7 @@ export const registerTeacher = async (req, res) => {
         });
 
         return res.status(201).json({
-            succes : true,
+            success : true,
             message : "Teacher registered successfully"
         });
          
@@ -38,7 +37,7 @@ export const registerTeacher = async (req, res) => {
          console.error("Error registering teacher:", error);
         
          return res.status(500).json({
-            succes : false,
+            success : false,
             message : "Internal server error"
          });
 
@@ -55,7 +54,7 @@ export const loginTeacher = async(req, res) => {
         
         if(!teacher){
             return res.status(401).json({
-                succes : false,
+                success : false,
                 message : "Invalid credentials"
             });
         };
@@ -64,7 +63,7 @@ export const loginTeacher = async(req, res) => {
         
         if(!isPasswordValid){
             return res.status(401).json({
-                succes : false,
+                success : false,
                 message : "Invalid credentials"
             });
         };
@@ -72,7 +71,7 @@ export const loginTeacher = async(req, res) => {
         const token = generateToken(teacher);
 
         return res.status(200).json({
-            succes : true,
+            success : true,
             message : "Teacher logged in successfully",
             token
         });
@@ -83,8 +82,9 @@ export const loginTeacher = async(req, res) => {
         console.error("Error logging in teacher:", error);
         
         return res.status(500).json({
-            succes : false,
-            message : "Internal server error"
+            success : false,
+            message : "Internal server error",
+            error: error.message
         });
 
     }

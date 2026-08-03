@@ -37,7 +37,6 @@ function Teacher() {
             text="Go Back Home (⌘ + 🔙)"
             variant="secondary"
             onClick={() => navigate("/")}
-            // className="flex"
           />
         </div>
 
@@ -45,7 +44,10 @@ function Teacher() {
             {/* Login Form will come here */}
               
                 {authMode === "login" ? (
-                    <LoginForm setAuthMode={setAuthMode} />
+                    <LoginForm
+                        setAuthMode={setAuthMode}
+                        onLoginSuccess={() => navigate("/teacher/dashboard")}
+                    />
                 ) : (
                     <RegisterForm setAuthMode={setAuthMode} />
                 )}

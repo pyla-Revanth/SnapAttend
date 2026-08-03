@@ -1,5 +1,5 @@
 
-function Button({ text, onClick,variant = "primary", icon ,className = ""}) {
+function Button({ text, onClick,variant = "primary", icon ,className = "",type = "button",disabled = false}) {
 
   const baseStyle = `
       flex
