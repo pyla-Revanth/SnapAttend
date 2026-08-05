@@ -1,5 +1,12 @@
+import CameraInput from "../../components/CameraInput";
+
 function Student() {
-  return <h1>Student Page</h1>;
+  console.log("CameraInput Render");
+  return (
+    <div>
+      <CameraInput />
+    </div>
+  );
 }
 
 export default Student;
