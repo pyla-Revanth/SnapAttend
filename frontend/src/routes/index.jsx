@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Student from "../pages/Student";
 import Teacher from "../pages/Teacher";
-import TeacherDashboard from "../pages/Teacher/TeacherDashboard";
+import TeacherDashboard from "../pages/TeacherDashboard";
 
 function AppRouter() {
   return (

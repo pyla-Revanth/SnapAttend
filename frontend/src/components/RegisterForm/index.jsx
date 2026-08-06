@@ -1,29 +1,31 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
+import KeyIcon from "@mui/icons-material/Key";
+
+import { registerTeacher } from "../../api/teacherApi";
+
+import Card from "../Card";
 import Input from "../Input";
 import Button from "../Button";
-import Card from "../Card";
-import KeyIcon from "@mui/icons-material/Key";
-import { registerTeacher } from "../../api/teacherApi.js";
-import toast from "react-hot-toast";
 
 function RegisterForm({ setAuthMode }) {
-
     const [formData, setFormData] = useState({
         username: "",
         name: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
     });
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        setFormData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
     };
 
     const handleRegister = async () => {
-
         const {
             username,
             name,
@@ -31,7 +33,6 @@ function RegisterForm({ setAuthMode }) {
             confirmPassword,
         } = formData;
 
-        // Empty field validation
         if (
             !username ||
             !name ||
@@ -42,13 +43,13 @@ function RegisterForm({ setAuthMode }) {
             return;
         }
 
-        // Confirm password validation
         if (password !== confirmPassword) {
             toast.error("Passwords do not match.");
             return;
         }
 
         try {
+            setIsLoading(true);
 
             const response = await registerTeacher({
                 username,
@@ -57,32 +58,28 @@ function RegisterForm({ setAuthMode }) {
             });
 
             toast.success(response.message);
-            
+
             setTimeout(() => {
                 setAuthMode("login");
             }, 1500);
-
         } catch (error) {
-
             toast.error(
                 error.response?.data?.message ||
                 "Registration failed."
             );
-
+        } finally {
+            setIsLoading(false);
         }
-
     };
-
 
     return (
         <Card>
             <h2
                 className="
-                    font-['Climate_Crisis']
                     text-2xl
                     text-center
                     text-black
-                    
+                    font-['Climate_Crisis']
                 "
             >
                 Register your teacher profile
@@ -110,8 +107,8 @@ function RegisterForm({ setAuthMode }) {
                 <Input
                     id="teacher-register-password"
                     name="password"
-                    label="Password"
                     type="password"
+                    label="Password"
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleChange}
@@ -120,27 +117,29 @@ function RegisterForm({ setAuthMode }) {
                 <Input
                     id="teacher-confirm-password"
                     name="confirmPassword"
-                    label="Confirm Password"
                     type="password"
+                    label="Confirm Password"
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                 />
             </div>
-            
-            <div className="flex gap-4 mt-2">
+
+            <div className="mt-2 flex gap-4">
                 <Button
-                    text="Register Now"
+                    text={isLoading ? "Registering..." : "Register Now"}
                     icon={<KeyIcon fontSize="small" />}
                     className="flex-1"
                     onClick={handleRegister}
+                    disabled={isLoading}
                 />
 
                 <Button
                     text="Login Instead"
-                    className="flex-1"
                     icon={<KeyIcon fontSize="small" />}
+                    className="flex-1"
                     onClick={() => setAuthMode("login")}
+                    disabled={isLoading}
                 />
             </div>
         </Card>

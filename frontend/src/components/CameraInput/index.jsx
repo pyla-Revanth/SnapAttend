@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
+
 import Button from "../Button";
 
 function CameraInput() {
@@ -35,23 +36,20 @@ function CameraInput() {
             if (videoRef.current) {
                 videoRef.current.srcObject = mediaStream;
 
-                videoRef.current.onloadedmetadata = () => {
-                    videoRef.current.play();
+                videoRef.current.onloadedmetadata = async () => {
+                    await videoRef.current.play();
                     setIsCameraReady(true);
                 };
             }
-        } catch (err) {
-            console.error(err);
+        } catch (error) {
+            console.error(error);
             setError("Unable to access camera.");
         }
     };
 
     const stopCamera = () => {
         if (streamRef.current) {
-            streamRef.current.getTracks().forEach((track) => {
-                track.stop();
-            });
-
+            streamRef.current.getTracks().forEach((track) => track.stop());
             streamRef.current = null;
         }
 
@@ -64,31 +62,28 @@ function CameraInput() {
     };
 
     const captureImage = () => {
+        const video = videoRef.current;
+        const canvas = canvasRef.current;
 
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
+        if (!video || !canvas) return;
 
-    if (!video || !canvas) return;
+        if (video.readyState !== HTMLMediaElement.HAVE_ENOUGH_DATA) {
+            return;
+        }
 
-    if (video.readyState < 2) {
-        return;
-    }
+        const context = canvas.getContext("2d");
 
-    const context = canvas.getContext("2d");
+        if (!context) return;
 
-    if (!context) return;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0);
 
-    context.drawImage(video, 0, 0);
-
-    const image = canvas.toDataURL("image/png");
-
-    console.log(image.substring(0, 50));
-
-    setCapturedImage(image);
-};
+        setCapturedImage(
+            canvas.toDataURL("image/png")
+        );
+    };
 
     const retakePhoto = () => {
         setCapturedImage(null);
@@ -97,9 +92,9 @@ function CameraInput() {
     return (
         <div
             className="
-                w-full
-                mt-8
+                mt-1
                 flex
+                w-full
                 flex-col
                 items-center
                 gap-6
@@ -108,8 +103,8 @@ function CameraInput() {
             {error && (
                 <p
                     className="
-                        text-red-600
                         font-['Outfit']
+                        text-red-600
                     "
                 >
                     {error}
@@ -119,26 +114,25 @@ function CameraInput() {
             <div
                 className="
                     relative
-                    w-full
-                    max-w-2xl
-                    aspect-video
-                    rounded-2xl
-                    bg-gray-900
-                    border-4
-                    border-white
-                    shadow-xl
-                    overflow-hidden
                     flex
+                    aspect-video
+                    w-full
                     items-center
                     justify-center
+                    overflow-hidden
+                    rounded-2xl
+                    border-4
+                    border-white
+                    bg-gray-900
+                    shadow-xl
                 "
             >
                 {!isCameraReady && !capturedImage && (
                     <p
                         className="
                             absolute
-                            text-white
                             font-['Outfit']
+                            text-white
                         "
                     >
                         Starting camera...
@@ -151,10 +145,10 @@ function CameraInput() {
                     playsInline
                     muted
                     className={`
-                        w-full
                         h-full
-                        object-cover
+                        w-full
                         rounded-2xl
+                        object-cover
                         ${capturedImage ? "hidden" : "block"}
                     `}
                 />
@@ -162,34 +156,29 @@ function CameraInput() {
                 {capturedImage && (
                     <img
                         src={capturedImage}
-                        alt="Captured"
+                        alt="Captured face"
                         className="
                             absolute
                             inset-0
-                            w-full
                             h-full
-                            object-cover
+                            w-full
                             rounded-2xl
+                            object-cover
                         "
                     />
                 )}
             </div>
 
-            {!capturedImage ? (
-                <Button
-                    text="Capture"
-                    icon={<CameraAltIcon />}
-                    className="w-52"
-                    onClick={captureImage}
-                />
-            ) : (
-                <Button
-                    text="Retake"
-                    icon={<CameraAltIcon />}
-                    className="w-52"
-                    onClick={retakePhoto}
-                />
-            )}
+            <Button
+                text={capturedImage ? "Retake" : "Capture"}
+                icon={<CameraAltIcon />}
+                className="w-52"
+                onClick={
+                    capturedImage
+                        ? retakePhoto
+                        : captureImage
+                }
+            />
 
             <canvas
                 ref={canvasRef}
