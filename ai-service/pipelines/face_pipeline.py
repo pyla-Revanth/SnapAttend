@@ -40,7 +40,3 @@ def get_face_embeddings(image_np):
         encodings.append(np.array(face_decriptor))
 
     return encodings
-
-
-
-
