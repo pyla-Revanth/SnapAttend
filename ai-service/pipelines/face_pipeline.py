@@ -40,3 +40,21 @@ def get_face_embeddings(image_np):
         encodings.append(np.array(face_decriptor))
 
     return encodings
+
+def build_training_data(students):
+
+    X = []
+    y = []
+
+    for student in students:
+
+        embedding = student.get("face_embedding")
+
+        if embedding:
+
+            X.append(np.array(embedding))
+            y.append(student.get("student_id"))
+
+    return X, y
+
+    
