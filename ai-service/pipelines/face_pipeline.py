@@ -57,4 +57,21 @@ def build_training_data(students):
 
     return X, y
 
-    
+
+def train_classifier(X, y):
+
+    if len(X) == 0 or len(y) == 0:
+        return None
+
+    if len(set(y)) < 2:
+        return None
+
+    clf = SVC(
+        kernel="linear",
+        probability=True,
+        class_weight="balanced",
+    )
+
+    clf.fit(X, y)
+
+    return clf
