@@ -75,3 +75,17 @@ def train_classifier(X, y):
     clf.fit(X, y)
 
     return clf
+
+def predict_faces(class_image_np, clf):
+
+    encodings = get_face_embeddings(class_image_np)
+
+    detected_students = []
+
+    for encoding in encodings:
+
+        predicted_id = clf.predict([encoding])[0]
+
+        detected_students.append(int(predicted_id))
+
+    return detected_students
