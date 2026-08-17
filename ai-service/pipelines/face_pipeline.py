@@ -76,9 +76,16 @@ def train_classifier(X, y):
 
     return clf
 
+
 def predict_faces(class_image_np, clf):
 
+    if clf is None:
+        return []
+
     encodings = get_face_embeddings(class_image_np)
+
+    if not encodings:
+        return []
 
     detected_students = []
 
