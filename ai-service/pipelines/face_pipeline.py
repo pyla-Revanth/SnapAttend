@@ -4,7 +4,15 @@ import face_recognition_models
 
 from sklearn.svm import SVC
 
+_dlib_models = None
+_trained_classifier = None
+
 def load_dlib_models():
+
+    global _dlib_models
+
+    if _dlib_models is not None:
+        return _dlib_models
 
     detector = dlib.get_frontal_face_detector()
 
@@ -15,8 +23,10 @@ def load_dlib_models():
     facerec = dlib.face_recognition_model_v1(
         face_recognition_models.face_recognition_model_location()
     )
-    
-    return detector, shape, facerec
+
+    _dlib_models = detector, shape, facerec
+
+    return _dlib_models
 
 
 def get_face_embeddings(image_np):
@@ -125,3 +135,11 @@ def predict_faces(class_image_np, clf, X, y):
             detected_students.append(predicted_id)
 
     return detected_students
+
+def clear_model_cache():
+
+    global _dlib_models
+    global _trained_classifier
+
+    _dlib_models = None
+    _trained_classifier = None
