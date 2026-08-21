@@ -6,6 +6,7 @@ import Teacher from "../pages/Teacher";
 import TeacherDashboard from "../pages/TeacherDashboard";
 
 function AppRouter() {
+  
   return (
     <BrowserRouter>
       <Routes>

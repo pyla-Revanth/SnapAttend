@@ -28,7 +28,7 @@ def get_face_embeddings(image_np):
     # [<dlib.rectangle object at 0x7f8b1c2a3d90>, <dlib.rectangle object at 0x7f8b1c2a3e50>]
     # faces[0] : (120, 50, 320, 250)
     # faces[1] : (450, 100, 600, 250)
-    #upscale 2x
+    # upscale 2x 
 
     encodings = []
 
@@ -125,4 +125,3 @@ def predict_faces(class_image_np, clf, X, y):
             detected_students.append(predicted_id)
 
     return detected_students
-

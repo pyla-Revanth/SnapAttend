@@ -6,7 +6,7 @@ export const generateToken = (teacher) => {
         { 
             id: teacher.teacher_id || teacher.id,
             username: teacher.username
-        }, 
+        },
         process.env.JWT_SECRET, 
         {
             expiresIn: "1d"
