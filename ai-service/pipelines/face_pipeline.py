@@ -5,7 +5,6 @@ import face_recognition_models
 from sklearn.svm import SVC
 
 _dlib_models = None
-_trained_classifier = None
 
 def load_dlib_models():
 
@@ -135,11 +134,3 @@ def predict_faces(class_image_np, clf, X, y):
             detected_students.append(predicted_id)
 
     return detected_students
-
-def clear_model_cache():
-
-    global _dlib_models
-    global _trained_classifier
-
-    _dlib_models = None
-    _trained_classifier = None
