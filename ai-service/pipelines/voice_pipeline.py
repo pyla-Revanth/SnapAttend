@@ -1,21 +1,28 @@
-import numpy as np
 import io
+
 import librosa
+import numpy as np
 
 from resemblyzer import VoiceEncoder, preprocess_wav
 
+_voice_encoder = None
+
 def load_voice_encoder():
 
-    encoder = VoiceEncoder()
+    global _voice_encoder
+    
+    if _voice_encoder is None:
+        _voice_encoder = VoiceEncoder()
+    
+    return _voice_encoder
 
-    return encoder
 
 def get_voice_embedding(audio_bytes):
 
     try:
         encoder = load_voice_encoder()
 
-        audio, _ = librosa.load(
+        audio, sr = librosa.load(
             io.BytesIO(audio_bytes),
             sr=16000
         )
@@ -27,10 +34,17 @@ def get_voice_embedding(audio_bytes):
         return embedding.tolist()
 
     except Exception as e:
+
         print("Voice recognition error:", e)
+
         return None
 
-def identify_speaker(new_embedding, candidates_dict, threshold=0.65):
+
+def identify_speaker(
+    new_embedding,
+    candidates_dict,
+    threshold=0.65
+):
 
     if new_embedding is None or not candidates_dict:
         return None, 0.0
@@ -48,17 +62,38 @@ def identify_speaker(new_embedding, candidates_dict, threshold=0.65):
             )
 
             if similarity > best_score:
+
                 best_score = similarity
                 best_sid = sid
 
     if best_score >= threshold:
+
         return best_sid, best_score
 
     return None, best_score
 
-def process_bulk_audio(audio_bytes, candidates_dict, threshold=0.65):
+def process_voice(audio_bytes, candidates_dict, threshold=0.65):
+
+    embedding = get_voice_embedding(audio_bytes)
+
+    if embedding is None:
+        return None, 0.0
+
+    return identify_speaker(
+        np.array(embedding),
+        candidates_dict,
+        threshold
+    )
+
+    
+def process_bulk_audio(
+    audio_bytes,
+    candidates_dict,
+    threshold=0.65
+):
 
     try:
+
         encoder = load_voice_encoder()
 
         audio, sr = librosa.load(
@@ -77,7 +112,6 @@ def process_bulk_audio(audio_bytes, candidates_dict, threshold=0.65):
 
             if (end - start) < sr * 0.5:
                 continue
-            # Ignore segments shorter than 0.5 seconds
 
             segment_audio = audio[start:end]
 
