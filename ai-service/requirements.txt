@@ -23,3 +23,9 @@ pillow
 # ============================
 librosa
 resemblyzer
+
+# ============================
+# API Framework
+# ============================
+fastapi
+uvicorn
