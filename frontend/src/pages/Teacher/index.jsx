@@ -1,15 +1,47 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState,useEffect} from "react";
 
 import DashboardHeader from "../../components/DashboardHeader";
 import Button from "../../components/Button";
 import LoginForm from "../../components/LoginForm";
 import RegisterForm from "../../components/RegisterForm";
+import { getTeacherProfile } from "../../api/teacherApi";
 
 function Teacher() {
+
     const navigate = useNavigate();
 
     const [authMode, setAuthMode] = useState("login");
+
+    useEffect(() => {
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            return;
+        }
+
+        const checkAuthentication = async () => {
+
+            try {
+
+                await getTeacherProfile();
+
+                navigate("/teacher/dashboard", {
+                    replace: true
+                });
+
+            } catch (error) {
+
+                localStorage.removeItem("token");
+
+            }
+
+        };
+
+        checkAuthentication();
+
+    }, [navigate]);
 
     return (
         <div

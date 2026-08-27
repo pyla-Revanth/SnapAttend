@@ -17,3 +17,12 @@ export const loginTeacher = async (loginData) => {
 
     return response.data;
 };
+
+export const getTeacherProfile = async () => {
+
+    const response = await api.get(
+        "/teacher/profile"
+    );
+
+    return response.data;
+};
