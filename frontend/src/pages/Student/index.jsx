@@ -2,8 +2,32 @@ import { useNavigate } from "react-router-dom";
 import DashboardHeader from "../../components/DashboardHeader";
 import Button from "../../components/Button";
 import CameraInput from "../../components/CameraInput";
+import { faceLogin } from "../../api/studentApi";
 
 function Student() {
+
+    const handleFaceCapture = async (imageData) => {
+
+        const response = await fetch(imageData);
+
+        const blob = await response.blob();
+
+        const formData = new FormData();
+
+        formData.append("image", blob, "face.png");
+
+        try {
+
+            const data = await faceLogin(formData);
+
+            console.log("Face login response:", data);
+
+        } catch (error) {
+
+            console.error("Face login failed:", error);
+
+        }
+    };
 
     const navigate = useNavigate();
 
@@ -59,7 +83,7 @@ function Student() {
               "
           >
 
-              <CameraInput />
+              <CameraInput onCapture={handleFaceCapture}/>
 
           </div>
         

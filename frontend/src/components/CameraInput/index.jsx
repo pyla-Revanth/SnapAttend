@@ -3,7 +3,7 @@ import CameraAltIcon from "@mui/icons-material/CameraAlt";
 
 import Button from "../Button";
 
-function CameraInput() {
+function CameraInput({ onCapture }) {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const streamRef = useRef(null);
@@ -80,9 +80,9 @@ function CameraInput() {
 
         context.drawImage(video, 0, 0);
 
-        setCapturedImage(
-            canvas.toDataURL("image/png")
-        );
+        const imageData = canvas.toDataURL("image/png");
+        setCapturedImage(imageData);
+        onCapture(imageData);
     };
 
     const retakePhoto = () => {
