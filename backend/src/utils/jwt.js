@@ -1,18 +1,17 @@
 import jwt from "jsonwebtoken";
 
-export const generateToken = (teacher) => {
-    
+export const generateToken = (user, role) => {
+
     return jwt.sign(
-        { 
-            id: teacher.teacher_id || teacher.id,
-            username: teacher.username
+        {
+            id: user.teacher_id || user.student_id || user.id,
+            role,
         },
-        process.env.JWT_SECRET, 
+        process.env.JWT_SECRET,
         {
             expiresIn: "1d"
         }
     );
-
 };
 
 export const verifyToken = (token) => {

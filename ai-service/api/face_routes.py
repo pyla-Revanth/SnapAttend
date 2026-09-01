@@ -48,11 +48,26 @@ async def predict_face(
             X,
             y,
         )
+        
+        if len(detected_students) == 0:
+            return {
+                "recognized": False,
+                "student_id": None,
+            }
+
+        if len(detected_students) > 1:
+            return {
+                "recognized": False,
+                "student_id": None,
+            }
+
+        student_id = detected_students[0]
 
         return {
-            "success": True,
-            "student_ids": detected_students,
+            "recognized": True,
+            "student_id": int(student_id),
         }
+
 
     except json.JSONDecodeError:
         raise HTTPException(

@@ -10,4 +10,3 @@ router.get("/:studentId", getStudentProfile);
 router.post("/face-login",upload.single("image"), faceLogin);
 
 export default router;
-

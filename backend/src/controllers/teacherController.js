@@ -68,7 +68,7 @@ export const loginTeacher = async(req, res) => {
             });
         };
 
-        const token = generateToken(teacher);
+        const token = generateToken(teacher,"teacher");
 
         return res.status(200).json({
             success : true,

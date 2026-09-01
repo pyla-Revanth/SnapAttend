@@ -2,7 +2,7 @@ import axios from "axios";
 
 const AI_SERVICE_URL = "http://localhost:8000";
 
-export const predictFace = async (imageBuffer) => {
+export const predictFace = async (imageBuffer, students) => {
 
     const formData = new FormData();
 
@@ -17,9 +17,15 @@ export const predictFace = async (imageBuffer) => {
         "face.png"
     );
 
+    formData.append(
+        "students",
+        JSON.stringify(students)
+    );
+
+
     const response = await axios.post(
         `${AI_SERVICE_URL}/face/predict`,
-        formData
+        formData,
     );
 
     return response.data;

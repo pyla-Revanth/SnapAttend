@@ -22,6 +22,10 @@ function Student() {
 
             console.log("Face login response:", data);
 
+            if (data.success) {
+                localStorage.setItem("token", data.token);
+            }
+
         } catch (error) {
 
             console.error("Face login failed:", error);
