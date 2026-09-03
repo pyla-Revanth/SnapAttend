@@ -1,6 +1,6 @@
 import React from 'react'
 
-const FaceRegister = ({ showRegistration }) => {
+const FaceRegister = ({ showRegistration, studentName, setStudentName }) => {
   return (
     <div>
         {showRegistration && (
@@ -21,6 +21,8 @@ const FaceRegister = ({ showRegistration }) => {
 
                     <input
                         type="text"
+                        value={studentName}
+                        onChange={(event) => setStudentName(event.target.value)}
                         placeholder="E.g. Hamza Rizvi"
                         className="
                             mt-2

@@ -10,6 +10,7 @@ function Student() {
 
     const [capturedImage, setCapturedImage] = useState(null);
     const [showRegistration, setShowRegistration] = useState(false);
+    const [studentName, setStudentName] = useState("");
 
     const handleFaceCapture = async (imageData) => {
 
@@ -106,7 +107,7 @@ function Student() {
             >
 
                 <CameraInput onCapture={handleFaceCapture}/>
-                <FaceRegister showRegistration={showRegistration} />
+                <FaceRegister showRegistration={showRegistration} studentName={studentName} setStudentName={setStudentName}/>
             </div>
         
         </div>
