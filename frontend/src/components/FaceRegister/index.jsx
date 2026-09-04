@@ -2,7 +2,7 @@ import React from 'react'
 
 const FaceRegister = ({ showRegistration, studentName, setStudentName }) => {
   return (
-    <div>
+    <div >
         {showRegistration && (
             <div className="w-full max-w-2xl mt-8 rounded-2xl border border-black/10 bg-white p-6">
 
