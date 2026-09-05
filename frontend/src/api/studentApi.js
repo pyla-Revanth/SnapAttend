@@ -9,3 +9,12 @@ export const faceLogin = async (formData) => {
 
     return response.data;
 };
+
+export const registerStudent = async (formData) => {
+    const response = await api.post(
+        "/student/register",
+        formData
+    );
+
+    return response.data;
+};

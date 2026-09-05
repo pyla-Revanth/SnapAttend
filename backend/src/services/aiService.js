@@ -23,8 +23,41 @@ export const predictFace = async (imageBuffer, students) => {
     );
 
 
+    try {
+        const response = await axios.post(
+            `${AI_SERVICE_URL}/face/predict`,
+            formData,
+        );
+
+        return response.data;
+
+    } catch (error) {
+        console.error(
+            "AI service error:",
+            error.response?.data || error.message
+        );
+
+        throw error;
+    }
+};
+
+export const generateFaceEmbedding = async (imageBuffer) => {
+
+    const formData = new FormData();
+
+    const imageBlob = new Blob(
+        [imageBuffer.buffer],
+        { type: "image/png" }
+    );
+
+    formData.append(
+        "image",
+        imageBlob,
+        "face.png"
+    );
+
     const response = await axios.post(
-        `${AI_SERVICE_URL}/face/predict`,
+        `${AI_SERVICE_URL}/face/embedding`,
         formData,
     );
 

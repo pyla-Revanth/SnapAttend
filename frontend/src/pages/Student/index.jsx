@@ -8,14 +8,15 @@ import { useState } from "react";
 
 function Student() {
 
+    const navigate = useNavigate();
     const [capturedImage, setCapturedImage] = useState(null);
     const [showRegistration, setShowRegistration] = useState(false);
     const [studentName, setStudentName] = useState("");
+    const [registrationError, setRegistrationError] = useState("");
 
     const handleFaceCapture = async (imageData) => {
 
         setCapturedImage(imageData);
-        setShowRegistration(true);
 
         const response = await fetch(imageData);
         const blob = await response.blob();
@@ -51,8 +52,6 @@ function Student() {
             console.error("Face login failed:", error);
         }
     };
-
-    const navigate = useNavigate();
 
     return (
         <div
@@ -107,7 +106,14 @@ function Student() {
             >
 
                 <CameraInput onCapture={handleFaceCapture}/>
-                <FaceRegister showRegistration={showRegistration} studentName={studentName} setStudentName={setStudentName}/>
+                <FaceRegister 
+                    showRegistration={showRegistration} 
+                    studentName={studentName} 
+                    setStudentName={setStudentName} 
+                    setRegistrationError={setRegistrationError} 
+                    registrationError={registrationError}
+                    capturedImage={capturedImage}
+                />
             </div>
         
         </div>

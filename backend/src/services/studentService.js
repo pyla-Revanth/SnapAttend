@@ -28,3 +28,18 @@ export const getStudentsWithFaceEmbeddings = async () => {
 
     return data;
 };
+
+export const createStudent = async (studentData) => {
+
+    const { data, error } = await supabase
+        .from("students")
+        .insert(studentData)
+        .select()
+        .single();
+
+    if (error) {
+        throw error;
+    }
+
+    return data;
+};
