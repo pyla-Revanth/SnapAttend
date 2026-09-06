@@ -6,7 +6,7 @@ export const getStudentProfile = async (req, res) => {
 
     try {
 
-        const { studentId } = req.params;
+        const studentId = req.user.id;
 
         const student = await getStudentById(studentId);
 

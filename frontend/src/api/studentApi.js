@@ -18,3 +18,11 @@ export const registerStudent = async (formData) => {
 
     return response.data;
 };
+
+export const getStudentProfile = async () => {
+    const response = await api.get(
+        "/student/profile"
+    );
+
+    return response.data;
+};
