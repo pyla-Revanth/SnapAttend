@@ -15,7 +15,7 @@ export const registerStudent = async (formData) => {
         "/student/register",
         formData
     );
-
+    
     return response.data;
 };
 

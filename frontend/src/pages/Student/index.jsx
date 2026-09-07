@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 import DashboardHeader from "../../components/DashboardHeader";
 import Button from "../../components/Button";
 import CameraInput from "../../components/CameraInput";
-import { faceLogin } from "../../api/studentApi";
+import { faceLogin, getStudentProfile } from "../../api/studentApi";
 import FaceRegister from "../../components/FaceRegister";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Student() {
 
@@ -13,6 +13,37 @@ function Student() {
     const [showRegistration, setShowRegistration] = useState(false);
     const [studentName, setStudentName] = useState("");
     const [registrationError, setRegistrationError] = useState("");
+
+    useEffect(() => {
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            return;
+        }
+
+        const checkAuthentication = async () => {
+
+            try {
+
+                await getStudentProfile();
+
+                navigate("/student/dashboard", {
+                    replace: true
+                });
+
+            } catch (error) {
+
+                localStorage.removeItem("token");
+
+            }
+
+        };
+
+        checkAuthentication();
+
+    }, [navigate]);
+
 
     const handleFaceCapture = async (imageData) => {
 
@@ -42,7 +73,6 @@ function Student() {
         } catch (error) {
 
             if (error.response?.status === 401) {
-                console.log("Face not recognized");
 
                 setShowRegistration(true);
 
@@ -105,14 +135,21 @@ function Student() {
                 "
             >
 
-                <CameraInput onCapture={handleFaceCapture}/>
+                <CameraInput
+                    onCapture={handleFaceCapture}
+                    capturedImage={capturedImage}
+                    setCapturedImage={setCapturedImage}
+                />
+
                 <FaceRegister 
                     showRegistration={showRegistration} 
+                    setShowRegistration={setShowRegistration}
                     studentName={studentName} 
                     setStudentName={setStudentName} 
                     setRegistrationError={setRegistrationError} 
                     registrationError={registrationError}
                     capturedImage={capturedImage}
+                    setCapturedImage={setCapturedImage}
                 />
             </div>
         

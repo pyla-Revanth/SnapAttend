@@ -3,12 +3,11 @@ import CameraAltIcon from "@mui/icons-material/CameraAlt";
 
 import Button from "../Button";
 
-function CameraInput({ onCapture }) {
+function CameraInput({ onCapture, capturedImage, setCapturedImage }) {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const streamRef = useRef(null);
 
-    const [capturedImage, setCapturedImage] = useState(null);
     const [error, setError] = useState("");
     const [isCameraReady, setIsCameraReady] = useState(false);
 

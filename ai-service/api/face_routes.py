@@ -9,6 +9,7 @@ from pipelines.face_pipeline import (
     build_training_data,
     train_classifier,
     predict_faces,
+    get_face_embeddings,
 )
 
 
@@ -37,10 +38,10 @@ async def predict_face(
         classifier = train_classifier(X, y)
 
         if classifier is None:
-            raise HTTPException(
-                status_code=400,
-                detail="Not enough student face data to perform recognition.",
-            )
+            return {
+                "recognized": False,
+                "student_id": None,
+            }
 
         detected_students = predict_faces(
             image_np,
@@ -84,4 +85,50 @@ async def predict_face(
         raise HTTPException(
             status_code=500,
             detail="Face recognition failed.",
+        )
+
+
+@router.post("/embedding")
+async def generate_face_embedding(
+    image : UploadFile = File(...),
+):
+    try:
+        image_bytes = await image.read()
+        
+        image = Image.open(
+            io.BytesIO(image_bytes)
+        ).convert("RGB")
+        
+        image_np = np.array(image)
+        
+        embeddings = get_face_embeddings(image_np)
+        
+        if len(embeddings) == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="No face detected.",
+            )
+
+        if len(embeddings) > 1:
+            raise HTTPException(
+                status_code=400,
+                detail="Multiple faces detected. Please capture only one face.",
+            )
+
+        embedding = embeddings[0]
+        
+        return {
+            "success": True,
+            "embedding": embedding.tolist(),
+        }
+        
+    except HTTPException:
+        raise
+
+    except Exception as error:
+        print("Face embedding error:", error)
+
+        raise HTTPException(
+            status_code=500,
+            detail="Face embedding generation failed.",
         )

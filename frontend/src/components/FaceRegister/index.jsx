@@ -2,7 +2,7 @@ import React from 'react'
 import { registerStudent } from "../../api/studentApi";
 import Button from "../Button";
 
-const FaceRegister = ({ showRegistration, capturedImage, studentName, setStudentName, setRegistrationError, registrationError }) => {
+const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, studentName, setStudentName, setRegistrationError, registrationError, onRegistrationSuccess, setCapturedImage }) => {
 
     const handleRegistration = async () => {
 
@@ -40,6 +40,7 @@ const FaceRegister = ({ showRegistration, capturedImage, studentName, setStudent
             if (data.success) {
                 setRegistrationError("");
                 setStudentName("");
+                setCapturedImage(null);
                 setShowRegistration(false);
                 alert("Registration successful! Please try logging in again.");
             }
@@ -114,4 +115,4 @@ const FaceRegister = ({ showRegistration, capturedImage, studentName, setStudent
     )
 }
 
-export default FaceRegister
+export default FaceRegister;

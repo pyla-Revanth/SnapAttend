@@ -13,4 +13,4 @@ def get_voice_candidates(students):
 
             candidates[student_id] = voice_embedding
 
-    return candidatesa
+    return candidates
