@@ -13,6 +13,13 @@ router.get("/profile", authMiddleware, studentOnly, getStudentProfile);
 
 router.post("/face-login", upload.single("image"), faceLogin);
 
-router.post("/register", upload.single("image"), registerStudent);
+router.post(
+    "/register",
+    upload.fields([
+        { name: "image", maxCount: 1 },
+        { name: "voice", maxCount: 1 },
+    ]),
+    registerStudent
+);
 
 export default router;

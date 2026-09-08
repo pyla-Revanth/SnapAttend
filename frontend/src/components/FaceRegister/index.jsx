@@ -1,8 +1,10 @@
 import React from 'react'
 import { registerStudent } from "../../api/studentApi";
 import Button from "../Button";
-
+import VoiceInput from "../VoiceInput";
 const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, studentName, setStudentName, setRegistrationError, registrationError, onRegistrationSuccess, setCapturedImage }) => {
+
+    const [voiceBlob, setVoiceBlob] = useState(null);
 
     const handleRegistration = async () => {
 
@@ -34,6 +36,14 @@ const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, stu
             "face.png"
         );
 
+        if (voiceBlob) {
+            formData.append(
+                "voice",
+                voiceBlob,
+                "voice.webm"
+            );
+        }
+
         try {
             const data = await registerStudent(formData);
 
@@ -42,6 +52,7 @@ const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, stu
                 setStudentName("");
                 setCapturedImage(null);
                 setShowRegistration(false);
+                setVoiceBlob(null);
                 alert("Registration successful! Please try logging in again.");
             }
         } catch (error) {
@@ -96,6 +107,11 @@ const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, stu
                             "
                         />
                     </div>
+
+                    <VoiceInput
+                        onVoiceCapture={setVoiceBlob}
+                    />
+
                     <div className="mt-6">
                         <Button
                             text="Create Account"

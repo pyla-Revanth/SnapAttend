@@ -1,5 +1,5 @@
 import { getStudentById, getStudentsWithFaceEmbeddings, createStudent } from "../services/studentService.js";
-import { predictFace, generateFaceEmbedding } from "../services/aiService.js";
+import { predictFace, generateFaceEmbedding,generateVoiceEmbedding } from "../services/aiService.js";
 import { generateToken } from "../utils/jwt.js";
 
 export const getStudentProfile = async (req, res) => {
@@ -86,10 +86,11 @@ export const faceLogin = async (req, res) => {
 };
 
 export const registerStudent = async (req, res) => {
-
     try {
+        const imageFile = req.files?.image?.[0];
+        const voiceFile = req.files?.voice?.[0];
 
-        if (!req.file) {
+        if (!imageFile) {
             return res.status(400).json({
                 success: false,
                 message: "Image is required",
@@ -105,7 +106,9 @@ export const registerStudent = async (req, res) => {
             });
         }
 
-        const embeddingResult = await generateFaceEmbedding(req.file);
+        // Generate face embedding
+        const embeddingResult =
+            await generateFaceEmbedding(imageFile);
 
         if (!embeddingResult.embedding) {
             return res.status(500).json({
@@ -119,6 +122,22 @@ export const registerStudent = async (req, res) => {
             face_embedding: embeddingResult.embedding,
         };
 
+        // Voice is optional
+        if (voiceFile) {
+            const voiceEmbeddingResult =
+                await generateVoiceEmbedding(voiceFile);
+
+            if (!voiceEmbeddingResult.embedding) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Failed to generate voice embedding",
+                });
+            }
+
+            studentData.voice_embedding =
+                voiceEmbeddingResult.embedding;
+        }
+
         const student = await createStudent(studentData);
 
         return res.status(201).json({
@@ -128,7 +147,6 @@ export const registerStudent = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error("Student registration error:", error);
 
         return res.status(500).json({

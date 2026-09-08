@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from api.face_routes import router as face_router
-
+from api.voice_routes import router as voice_router
 
 app = FastAPI(
     title="SnapAttend AI Service",
@@ -15,6 +15,11 @@ app.include_router(
     tags=["Face Recognition"],
 )
 
+app.include_router(
+    voice_router,
+    prefix="/voice",
+    tags=["Voice Recognition"]
+)
 
 @app.get("/health")
 def health_check():
