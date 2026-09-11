@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { registerStudent } from "../../api/studentApi";
 import Button from "../Button";
 import VoiceInput from "../VoiceInput";
+import { useNavigate } from "react-router-dom";
+
 const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, studentName, setStudentName, setRegistrationError, registrationError, onRegistrationSuccess, setCapturedImage }) => {
 
     const [voiceBlob, setVoiceBlob] = useState(null);
+    const navigate = useNavigate();
 
     const handleRegistration = async () => {
 
@@ -53,7 +56,7 @@ const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, stu
                 setCapturedImage(null);
                 setShowRegistration(false);
                 setVoiceBlob(null);
-                alert("Registration successful! Please try logging in again.");
+                navigate("/student/dashboard");
             }
         } catch (error) {
             console.error("Registration failed:", error);

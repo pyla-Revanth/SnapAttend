@@ -140,9 +140,12 @@ export const registerStudent = async (req, res) => {
 
         const student = await createStudent(studentData);
 
+        const token = generateToken(student,"student");
+
         return res.status(201).json({
             success: true,
             message: "Student registered successfully",
+            token,
             student,
         });
 
