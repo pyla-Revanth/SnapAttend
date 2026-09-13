@@ -80,8 +80,6 @@ async def predict_face(
         raise
 
     except Exception as error:
-        print("Face prediction error:", error)
-
         raise HTTPException(
             status_code=500,
             detail="Face recognition failed.",
@@ -126,8 +124,6 @@ async def generate_face_embedding(
         raise
 
     except Exception as error:
-        print("Face embedding error:", error)
-
         raise HTTPException(
             status_code=500,
             detail="Face embedding generation failed.",

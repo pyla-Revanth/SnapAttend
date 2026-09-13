@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import DashboardHeader from "../../components/DashboardHeader";
 import Button from "../../components/Button";
+import toast from "react-hot-toast";
 
 function StudentDashboard() {
 
@@ -9,6 +10,7 @@ function StudentDashboard() {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
+        toast.success("Logged out successfully!");
         navigate("/student");
     };
 

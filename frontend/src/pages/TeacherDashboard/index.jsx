@@ -2,9 +2,16 @@ import { useNavigate } from "react-router-dom";
 
 import DashboardHeader from "../../components/DashboardHeader";
 import Button from "../../components/Button";
+import toast from "react-hot-toast";
 
 function TeacherDashboard() {
     const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        toast.success("Logged out successfully!");
+        navigate("/teacher");
+    };
 
     return (
         <div
@@ -15,12 +22,14 @@ function TeacherDashboard() {
                 py-8
             "
         >
+
             <div
                 className="
                     max-w-6xl
                     mx-auto
                 "
             >
+
                 <div
                     className="
                         flex
@@ -28,13 +37,15 @@ function TeacherDashboard() {
                         items-center
                     "
                 >
+
                     <DashboardHeader />
 
                     <Button
-                        text="Go Back Home (⌘ + 🔙)"
+                        text="Logout"
                         variant="secondary"
-                        onClick={() => navigate("/")}
+                        onClick={handleLogout}
                     />
+
                 </div>
 
                 <h1
@@ -46,7 +57,9 @@ function TeacherDashboard() {
                 >
                     Teacher Dashboard
                 </h1>
+
             </div>
+
         </div>
     );
 }

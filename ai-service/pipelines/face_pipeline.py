@@ -32,7 +32,7 @@ def get_face_embeddings(image_np):
 
     detector, sp, facerec = load_dlib_models()
 
-    faces = detector(image_np,1)
+    faces = detector(image_np,2)
 
     # [<dlib.rectangle object at 0x7f8b1c2a3d90>, <dlib.rectangle object at 0x7f8b1c2a3e50>]
     # faces[0] : (120, 50, 320, 250)

@@ -41,7 +41,6 @@ function CameraInput({ onCapture, capturedImage, setCapturedImage }) {
                 };
             }
         } catch (error) {
-            console.error(error);
             setError("Unable to access camera.");
         }
     };

@@ -3,6 +3,7 @@ import { registerStudent } from "../../api/studentApi";
 import Button from "../Button";
 import VoiceInput from "../VoiceInput";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, studentName, setStudentName, setRegistrationError, registrationError, onRegistrationSuccess, setCapturedImage }) => {
 
@@ -13,11 +14,13 @@ const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, stu
 
         if (!studentName.trim()) {
             setRegistrationError("Please enter your name.");
+            toast.error("Please enter your name.");
             return;
         }
 
         if (!capturedImage) {
             setRegistrationError("Face image is missing.");
+            toast.error("Face image is missing.");
             return;
         }
 
@@ -56,11 +59,12 @@ const FaceRegister = ({ showRegistration,setShowRegistration, capturedImage, stu
                 setCapturedImage(null);
                 setShowRegistration(false);
                 setVoiceBlob(null);
+                toast.success("Registration successful!");
                 navigate("/student/dashboard");
             }
         } catch (error) {
-            console.error("Registration failed:", error);
             setRegistrationError(error.response?.data?.message || "Registration failed. Please try again.");
+            toast.error(error.response?.data?.message || "Registration failed. Please try again.");
         }
     };
     

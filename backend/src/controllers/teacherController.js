@@ -34,9 +34,7 @@ export const registerTeacher = async (req, res) => {
          
     } catch (error) {
 
-         console.error("Error registering teacher:", error);
-        
-         return res.status(500).json({
+        return res.status(500).json({
             success : false,
             message : "Internal server error"
          });
@@ -55,7 +53,7 @@ export const loginTeacher = async(req, res) => {
         if(!teacher){
             return res.status(401).json({
                 success : false,
-                message : "Invalid credentials"
+                message : "User Does Not Exist"
             });
         };
 
@@ -79,8 +77,6 @@ export const loginTeacher = async(req, res) => {
     }
     catch (error) {
 
-        console.error("Error logging in teacher:", error);
-        
         return res.status(500).json({
             success : false,
             message : "Internal server error",

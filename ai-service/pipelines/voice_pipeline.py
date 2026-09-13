@@ -2,6 +2,7 @@ import io
 
 import librosa
 import numpy as np
+from pydub import AudioSegment
 
 from resemblyzer import VoiceEncoder, preprocess_wav
 
@@ -17,13 +18,21 @@ def load_voice_encoder():
     return _voice_encoder
 
 
-def get_voice_embedding(audio_bytes):
+def get_voice_embedding(audio_bytes, audio_format="webm"):
 
     try:
         encoder = load_voice_encoder()
 
+        # Convert audio to wav using pydub
+        audio_segment = AudioSegment.from_file(io.BytesIO(audio_bytes), format=audio_format)
+        
+        # Convert to wav in memory
+        wav_io = io.BytesIO()
+        audio_segment.export(wav_io, format="wav")
+        wav_io.seek(0)
+
         audio, sr = librosa.load(
-            io.BytesIO(audio_bytes),
+            wav_io,
             sr=16000
         )
 
@@ -34,9 +43,6 @@ def get_voice_embedding(audio_bytes):
         return embedding.tolist()
 
     except Exception as e:
-
-        print("Voice recognition error:", e)
-
         return None
 
 
@@ -136,7 +142,4 @@ def process_bulk_audio(
         return identified_results
 
     except Exception as e:
-
-        print("Bulk voice processing error:", e)
-
         return {}

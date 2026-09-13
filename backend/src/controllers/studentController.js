@@ -24,8 +24,6 @@ export const getStudentProfile = async (req, res) => {
 
     } catch (error) {
 
-        console.error("Error fetching student profile:", error);
-
         return res.status(500).json({
             success: false,
             message: "Internal server error",
@@ -76,7 +74,13 @@ export const faceLogin = async (req, res) => {
 
     } catch (error) {
 
-        console.error("Face login error:", error);
+        // If AI service returned a specific error, propagate it
+        if (error.response?.status && error.response?.data?.detail) {
+            return res.status(error.response.status).json({
+                success: false,
+                message: error.response.data.detail,
+            });
+        }
 
         return res.status(500).json({
             success: false,
@@ -111,9 +115,9 @@ export const registerStudent = async (req, res) => {
             await generateFaceEmbedding(imageFile);
 
         if (!embeddingResult.embedding) {
-            return res.status(500).json({
+            return res.status(400).json({
                 success: false,
-                message: "Failed to generate face embedding",
+                message: "No face detected in the image. Please capture a clear face image.",
             });
         }
 
@@ -150,7 +154,14 @@ export const registerStudent = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Student registration error:", error);
+
+        // If AI service returned a specific error, propagate it
+        if (error.response?.status && error.response?.data?.detail) {
+            return res.status(error.response.status).json({
+                success: false,
+                message: error.response.data.detail,
+            });
+        }
 
         return res.status(500).json({
             success: false,

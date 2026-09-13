@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import Button from "./Button";
+import Button from "../Button";
 
 function VoiceInput({ onVoiceCapture }) {
 
@@ -52,7 +52,6 @@ function VoiceInput({ onVoiceCapture }) {
             setIsRecording(true);
 
         } catch (error) {
-            console.error(error);
             setError("Unable to access microphone.");
         }
     };

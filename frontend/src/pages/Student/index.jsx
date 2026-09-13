@@ -5,6 +5,7 @@ import CameraInput from "../../components/CameraInput";
 import { faceLogin, getStudentProfile } from "../../api/studentApi";
 import FaceRegister from "../../components/FaceRegister";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 function Student() {
 
@@ -63,10 +64,9 @@ function Student() {
         try {
             const data = await faceLogin(formData);
 
-            console.log("Face login response:", data);
-
             if (data.success) {
                 localStorage.setItem("token", data.token);
+                toast.success("Login successful!");
                 navigate("/student/dashboard");
             }
 
@@ -75,11 +75,17 @@ function Student() {
             if (error.response?.status === 401) {
 
                 setShowRegistration(true);
+                toast.error("Face not recognized. Please register.");
 
                 return;
             }
 
-            console.error("Face login failed:", error);
+            if (error.response?.status === 400) {
+                toast.error("No face detected in the image. Please capture a clear face image.");
+                return;
+            }
+
+            toast.error("Login failed. Please try again.");
         }
     };
 

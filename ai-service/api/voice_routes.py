@@ -21,7 +21,23 @@ async def generate_voice_embedding(
                 detail="Audio is required.",
             )
 
-        embedding = get_voice_embedding(audio_bytes)
+        # Extract audio format from content type or filename
+        audio_format = "webm"  # default
+        content_type = audio.content_type or ""
+        filename = audio.filename or ""
+
+        if "webm" in content_type or filename.endswith(".webm"):
+            audio_format = "webm"
+        elif "wav" in content_type or filename.endswith(".wav"):
+            audio_format = "wav"
+        elif "mp3" in content_type or filename.endswith(".mp3"):
+            audio_format = "mp3"
+        elif "m4a" in content_type or filename.endswith(".m4a"):
+            audio_format = "m4a"
+        elif "ogg" in content_type or filename.endswith(".ogg"):
+            audio_format = "ogg"
+
+        embedding = get_voice_embedding(audio_bytes, audio_format)
 
         if embedding is None:
             raise HTTPException(
@@ -38,8 +54,6 @@ async def generate_voice_embedding(
         raise
 
     except Exception as error:
-        print("Voice embedding error:", error)
-
         raise HTTPException(
             status_code=500,
             detail="Voice embedding generation failed.",

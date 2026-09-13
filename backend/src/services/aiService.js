@@ -31,11 +31,6 @@ export const predictFace = async (imageFile, students) => {
         return response.data;
 
     } catch (error) {
-        console.error(
-            "AI service error:",
-            error.response?.data || error.message
-        );
-
         throw error;
     }
 };

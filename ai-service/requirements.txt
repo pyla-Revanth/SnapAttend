@@ -23,6 +23,7 @@ pillow
 # ============================
 librosa
 resemblyzer
+pydub
 
 # ============================
 # API Framework
