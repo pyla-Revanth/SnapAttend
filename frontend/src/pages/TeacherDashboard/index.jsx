@@ -1,16 +1,45 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import DashboardHeader from "../../components/DashboardHeader";
 import Button from "../../components/Button";
+import TeacherTabs from "../../components/TeacherTabs";
+
+import TakeAttendance from "../../components/TakeAttendance";
+import ManageSubjects from "../../components/ManageSubjects";
+import AttendanceRecords from "../../components/AttendanceRecords";
+
 import toast from "react-hot-toast";
 
 function TeacherDashboard() {
     const navigate = useNavigate();
 
+    const [currentTab, setCurrentTab] = useState(
+        "take_attendance"
+    );
+
     const handleLogout = () => {
         localStorage.removeItem("token");
+
         toast.success("Logged out successfully!");
+
         navigate("/teacher");
+    };
+
+    const renderActiveTab = () => {
+        if (currentTab === "take_attendance") {
+            return <TakeAttendance />;
+        }
+
+        if (currentTab === "manage_subjects") {
+            return <ManageSubjects />;
+        }
+
+        if (currentTab === "attendance_records") {
+            return <AttendanceRecords />;
+        }
+
+        return <TakeAttendance />;
     };
 
     return (
@@ -22,22 +51,19 @@ function TeacherDashboard() {
                 py-8
             "
         >
-
             <div
                 className="
-                    max-w-6xl
                     mx-auto
+                    max-w-6xl
                 "
             >
-
                 <div
                     className="
                         flex
-                        justify-between
                         items-center
+                        justify-between
                     "
                 >
-
                     <DashboardHeader />
 
                     <Button
@@ -45,7 +71,6 @@ function TeacherDashboard() {
                         variant="secondary"
                         onClick={handleLogout}
                     />
-
                 </div>
 
                 <h1
@@ -58,8 +83,20 @@ function TeacherDashboard() {
                     Teacher Dashboard
                 </h1>
 
-            </div>
+                <div className="col-span-1 sm:col-span-3">
+                    <TeacherTabs
+                        currentTab={currentTab}
+                        setCurrentTab={setCurrentTab}
+                    />
+                </div>
 
+                <div className="my-8 h-px bg-black/10" />
+
+                <div className="rounded-2xl bg-white p-6">
+                    {renderActiveTab()}
+                </div>
+                
+            </div>
         </div>
     );
 }
