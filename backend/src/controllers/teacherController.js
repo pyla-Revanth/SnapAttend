@@ -1,4 +1,5 @@
-import { teacherExists, createTeacher, getTeacherByUsername } from "../services/teacherService.js";
+import { teacherExists, createTeacher, getTeacherByUsername, getTeacherSubjects, createTeacherSubject } from "../services/teacherService.js";
+
 import { generateToken } from "../utils/jwt.js";
 import { hashPassword, comparePassword } from "../utils/password.js";
 
@@ -93,4 +94,65 @@ export const getTeacherProfile = async (req, res) => {
         user: req.user
     });
 
+};
+
+export const getSubjects = async (req, res) => {
+    try {
+        const teacherId = req.user.id;
+
+        const subjects = await getTeacherSubjects(teacherId);
+
+        res.status(200).json({
+            success: true,
+            subjects,
+        });
+
+    } catch (error) {
+        console.error("Get teacher subjects error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch subjects",
+        });
+    }
+};
+
+
+export const createSubject = async (req, res) => {
+    try {
+        const teacherId = req.user.id;
+
+        const {
+            subjectCode,
+            name,
+            section,
+        } = req.body;
+
+        if (!subjectCode || !name || !section) {
+            return res.status(400).json({
+                success: false,
+                message: "All subject fields are required",
+            });
+        }
+
+        const subject = await createTeacherSubject({
+            teacherId,
+            subjectCode,
+            name,
+            section,
+        });
+
+        res.status(201).json({
+            success: true,
+            message: "Subject created successfully",
+            subject,
+        });
+    } catch (error) {
+        console.error("Create subject error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to create subject",
+        });
+    }
 };

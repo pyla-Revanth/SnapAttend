@@ -26,3 +26,22 @@ export const getTeacherProfile = async () => {
 
     return response.data;
 };
+
+export const getTeacherSubjects = async () => {
+
+    const response = await api.get(
+        "/teacher/subjects"
+    );
+
+    return response.data;
+};
+
+export const createTeacherSubject = async (subjectData) => {
+    
+    const response = await api.post(
+        "/teacher/subjects",
+        subjectData
+    );
+
+    return response.data;
+};

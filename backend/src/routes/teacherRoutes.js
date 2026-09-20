@@ -1,8 +1,8 @@
 import express from "express";
 
-import {registerTeacher, loginTeacher, getTeacherProfile} from "../controllers/teacherController.js";
+import {registerTeacher, loginTeacher, getTeacherProfile, getSubjects, createSubject} from "../controllers/teacherController.js";
 
-import {validateLogin, validateRegister} from "../middleware/validationMiddleware.js";
+import {validateLogin, validateRegister, validateCreateSubject} from "../middleware/validationMiddleware.js";
 
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { teacherOnly } from "../middleware/roleMiddleware.js";
@@ -14,5 +14,9 @@ router.post("/register", validateRegister, registerTeacher);
 router.post("/login", validateLogin, loginTeacher);
 
 router.get("/profile", authMiddleware, teacherOnly, getTeacherProfile);
+
+router.get("/subjects", authMiddleware, teacherOnly, getSubjects);
+
+router.post("/subjects", validateCreateSubject, authMiddleware, teacherOnly, createSubject);
 
 export default router;

@@ -59,3 +59,28 @@ export const validateLogin = [
     handleValidationErrors,
 
 ];
+
+export const validateCreateSubject = [
+    body("subjectCode")
+        .trim()
+        .notEmpty()
+        .withMessage("Subject code is required.")
+        .isLength({ min: 2, max: 20 })
+        .withMessage("Subject code must be between 2 and 20 characters."),
+
+    body("name")
+        .trim()
+        .notEmpty()
+        .withMessage("Subject name is required.")
+        .isLength({ min: 2, max: 100 })
+        .withMessage("Subject name must be between 2 and 100 characters."),
+
+    body("section")
+        .trim()
+        .notEmpty()
+        .withMessage("Section is required.")
+        .isLength({ min: 1, max: 20 })
+        .withMessage("Section must be between 1 and 20 characters."),
+
+    handleValidationErrors,
+];
