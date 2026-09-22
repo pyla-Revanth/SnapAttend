@@ -1,4 +1,4 @@
-import { getStudentById, getStudentsWithFaceEmbeddings, createStudent } from "../services/studentService.js";
+import { getStudentById, getStudentsWithFaceEmbeddings, createStudent, getStudentSubjects, getStudentAttendance } from "../services/studentService.js";
 import { predictFace, generateFaceEmbedding,generateVoiceEmbedding } from "../services/aiService.js";
 import { generateToken } from "../utils/jwt.js";
 
@@ -166,6 +166,50 @@ export const registerStudent = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Student registration failed",
+        });
+    }
+};
+
+export const getSubjects = async (req, res) => {
+
+    try {
+        const studentId = req.user.id;
+
+        const subjects = await getStudentSubjects(studentId);
+
+        res.status(200).json({
+            success: true,
+            subjects,
+        });
+
+    } catch (error) {
+        console.error("Get student subjects error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch enrolled subjects",
+        });
+    }
+};
+
+export const getAttendance = async (req, res) => {
+
+    try {
+        const studentId = req.user.id;
+
+        const attendance = await getStudentAttendance(studentId);
+
+        res.status(200).json({
+            success: true,
+            attendance,
+        });
+        
+    } catch (error) {
+        console.error("Get student attendance error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch attendance",
         });
     }
 };

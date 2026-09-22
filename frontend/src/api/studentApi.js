@@ -26,3 +26,19 @@ export const getStudentProfile = async () => {
 
     return response.data;
 };
+
+export const getStudentSubjects = async () => {
+    const response = await api.get(
+        "/student/subjects"
+    );
+
+    return response.data;
+};
+
+export const getStudentAttendance = async () => {
+    const response = await api.get(
+        "/student/attendance"
+    );
+
+    return response.data;
+};
