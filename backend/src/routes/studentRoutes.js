@@ -1,6 +1,6 @@
 import express from "express";
 
-import { getStudentProfile, faceLogin, registerStudent, getSubjects, getAttendance } from "../controllers/studentController.js";
+import { getStudentProfile, faceLogin, registerStudent, getSubjects, getAttendance, enrollSubject } from "../controllers/studentController.js";
 
 import upload from "../middleware/uploadMiddleware.js";
 
@@ -25,5 +25,7 @@ router.post(
 router.get("/subjects", authMiddleware, studentOnly, getSubjects);
 
 router.get("/attendance", authMiddleware, studentOnly, getAttendance);
+
+router.post("/subjects/enroll", authMiddleware, studentOnly, enrollSubject);
 
 export default router;

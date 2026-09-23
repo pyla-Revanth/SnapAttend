@@ -1,4 +1,4 @@
-import { getStudentById, getStudentsWithFaceEmbeddings, createStudent, getStudentSubjects, getStudentAttendance } from "../services/studentService.js";
+import { getStudentById, getStudentsWithFaceEmbeddings, createStudent, getStudentSubjects, getStudentAttendance, enrollStudentInSubject } from "../services/studentService.js";
 import { predictFace, generateFaceEmbedding,generateVoiceEmbedding } from "../services/aiService.js";
 import { generateToken } from "../utils/jwt.js";
 
@@ -210,6 +210,46 @@ export const getAttendance = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Failed to fetch attendance",
+        });
+    }
+};
+
+export const enrollSubject = async (req, res) => {
+
+    try {
+
+        const studentId = req.user.id;
+
+        const { subjectCode } = req.body;
+
+        if (!subjectCode?.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "Subject code is required.",
+            });
+        }
+
+        const result = await enrollStudentInSubject({
+            studentId,
+            subjectCode: subjectCode.trim(),
+        });
+
+        res.status(201).json({
+            success: true,
+            message: `Successfully enrolled in ${result.subject.name}.`,
+            enrollment: result.enrollment,
+            subject: result.subject,
+        });
+
+    } catch (error) {
+        
+        console.error("Enroll student in subject error:", error);
+
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message:
+                error.message ||
+                "Failed to enroll in subject.",
         });
     }
 };

@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 import DashboardHeader from "../../components/DashboardHeader";
 import StudentSubjectCard from "../../components/StudentSubjectCard";
+import EnrollSubject from "../../components/EnrollSubject";
 import Button from "../../components/Button";
 
 import {
@@ -16,6 +17,7 @@ import {
 function StudentDashboard() {
     const navigate = useNavigate();
 
+    const [showEnrollModal, setShowEnrollModal] = useState(false);
     const [subjects, setSubjects] = useState([]);
     const [attendance, setAttendance] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,6 +25,17 @@ function StudentDashboard() {
     
     const handleUnenroll = (subjectId) => {
         console.log("Unenroll subject:", subjectId);
+    };
+
+    const handleSubjectEnrolled = (subject) => {
+        setSubjects((previous) => [
+            ...previous,
+            {
+                subject_id: subject.subject_id,
+                student_id: subject.student_id,
+                subjects: subject,
+            },
+        ]);
     };
 
     const handleLogout = () => {
@@ -143,6 +156,7 @@ function StudentDashboard() {
                             <Button
                                 text="Enroll in Subject"
                                 variant="primary"
+                                onClick={() => setShowEnrollModal(true)}
                             />
                         </div>
 
@@ -183,6 +197,14 @@ function StudentDashboard() {
                         </div>
                     </div>
                 )}
+
+                {showEnrollModal && (
+                    <EnrollSubject
+                        onClose={() => setShowEnrollModal(false)}
+                        onSubjectEnrolled={handleSubjectEnrolled}
+                    />
+                )}
+                
             </div>
         </div>
     );

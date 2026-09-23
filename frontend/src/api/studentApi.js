@@ -42,3 +42,14 @@ export const getStudentAttendance = async () => {
 
     return response.data;
 };
+
+export const enrollStudentInSubject = async (subjectCode) => {
+    const response = await api.post(
+        "/student/subjects/enroll",
+        {
+            subjectCode,
+        }
+    );
+
+    return response.data;
+};
