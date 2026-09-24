@@ -1,4 +1,4 @@
-import { getStudentById, getStudentsWithFaceEmbeddings, createStudent, getStudentSubjects, getStudentAttendance, enrollStudentInSubject } from "../services/studentService.js";
+import { getStudentById, getStudentsWithFaceEmbeddings, createStudent, getStudentSubjects, getStudentAttendance, enrollStudentInSubject, unenrollStudentFromSubject } from "../services/studentService.js";
 import { predictFace, generateFaceEmbedding,generateVoiceEmbedding } from "../services/aiService.js";
 import { generateToken } from "../utils/jwt.js";
 
@@ -250,6 +250,45 @@ export const enrollSubject = async (req, res) => {
             message:
                 error.message ||
                 "Failed to enroll in subject.",
+        });
+    }
+};
+
+
+export const unenrollSubject = async (req, res) => {
+    
+    try {
+        const studentId = req.user.id;
+
+        const subjectId = Number(req.params.subjectId);
+
+        if (!Number.isInteger(subjectId) || subjectId <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid subject ID.",
+            });
+        }
+
+        await unenrollStudentFromSubject({
+            studentId,
+            subjectId,
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Successfully unenrolled from subject.",
+        });
+    } catch (error) {
+        console.error(
+            "Unenroll student from subject error:",
+            error
+        );
+
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message:
+                error.message ||
+                "Failed to unenroll from subject.",
         });
     }
 };

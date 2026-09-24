@@ -149,3 +149,34 @@ export const enrollStudentInSubject = async ({
         subject,
     };
 };
+
+
+export const unenrollStudentFromSubject = async ({
+    studentId,
+    subjectId,
+}) => {
+    
+    const { data, error } = await supabase
+        .from("subject_students")
+        .delete()
+        .eq("student_id", studentId)
+        .eq("subject_id", subjectId)
+        .select()
+        .maybeSingle();
+
+    if (error) {
+        throw error;
+    }
+
+    if (!data) {
+        const error = new Error(
+            "You are not enrolled in this subject."
+        );
+
+        error.statusCode = 404;
+
+        throw error;
+    }
+
+    return data;
+};

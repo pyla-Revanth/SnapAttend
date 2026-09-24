@@ -5,38 +5,27 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import DashboardHeader from "../../components/DashboardHeader";
-import StudentSubjectCard from "../../components/StudentSubjectCard";
-import EnrollSubject from "../../components/EnrollSubject";
 import Button from "../../components/Button";
+import StudentSubjectCard from "../../components/StudentSubjectCard/StudentSubjectCard";
+import EnrollSubject from "../../components/EnrollSubject/EnrollSubject";
 
 import {
     getStudentSubjects,
     getStudentAttendance,
+    unenrollStudentFromSubject,
 } from "../../api/studentApi";
 
 function StudentDashboard() {
     const navigate = useNavigate();
 
-    const [showEnrollModal, setShowEnrollModal] = useState(false);
     const [subjects, setSubjects] = useState([]);
     const [attendance, setAttendance] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    
-    const handleUnenroll = (subjectId) => {
-        console.log("Unenroll subject:", subjectId);
-    };
 
-    const handleSubjectEnrolled = (subject) => {
-        setSubjects((previous) => [
-            ...previous,
-            {
-                subject_id: subject.subject_id,
-                student_id: subject.student_id,
-                subjects: subject,
-            },
-        ]);
-    };
+    const [showEnrollSubject, setShowEnrollSubject] =
+        useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -60,8 +49,13 @@ function StudentDashboard() {
                     getStudentAttendance(),
                 ]);
 
-                setSubjects(subjectsResponse.subjects || []);
-                setAttendance(attendanceResponse.attendance || []);
+                setSubjects(
+                    subjectsResponse.subjects || []
+                );
+
+                setAttendance(
+                    attendanceResponse.attendance || []
+                );
             } catch (error) {
                 console.error(
                     "Failed to load student dashboard:",
@@ -88,7 +82,6 @@ function StudentDashboard() {
         fetchDashboardData();
     }, []);
 
-    // Calculate attendance statistics for each subject
     const statsMap = {};
 
     for (const log of attendance) {
@@ -107,6 +100,58 @@ function StudentDashboard() {
             statsMap[subjectId].attended += 1;
         }
     }
+
+    const handleSubjectEnrolled = (subject) => {
+        setSubjects((previous) => [
+            ...previous,
+            {
+                subject_id: subject.subject_id,
+                student_id: subject.student_id,
+                subjects: subject,
+            },
+        ]);
+    };
+
+    const handleUnenroll = async (subjectId) => {
+        const confirmed = window.confirm(
+            "Are you sure you want to unenroll from this subject?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const response =
+                await unenrollStudentFromSubject(subjectId);
+
+            setSubjects((previous) =>
+                previous.filter(
+                    (subjectNode) =>
+                        subjectNode.subjects.subject_id !==
+                        subjectId
+                )
+            );
+
+            toast.success(
+                response.message ||
+                    "Successfully unenrolled from subject."
+            );
+        } catch (error) {
+            console.error(
+                "Failed to unenroll from subject:",
+                error
+            );
+
+            const backendMessage =
+                error.response?.data?.message;
+
+            toast.error(
+                backendMessage ||
+                    "Failed to unenroll from subject."
+            );
+        }
+    };
 
     return (
         <div className="min-h-screen bg-[#E0E3FF] px-8 py-8">
@@ -128,7 +173,6 @@ function StudentDashboard() {
 
                 <div className="my-8 h-px bg-black/10" />
 
-                
                 {loading && (
                     <div className="rounded-2xl bg-white p-8 text-center">
                         <p className="text-gray-500">
@@ -156,56 +200,80 @@ function StudentDashboard() {
                             <Button
                                 text="Enroll in Subject"
                                 variant="primary"
-                                onClick={() => setShowEnrollModal(true)}
+                                onClick={() =>
+                                    setShowEnrollSubject(true)
+                                }
                             />
                         </div>
 
-                        <div className="mt-6">
-                            {subjects.length === 0 ? (
-                                <div className="rounded-xl bg-[#F7F7FF] p-8 text-center">
-                                    <p className="text-xl font-semibold">
-                                        📚 No enrolled subjects
-                                    </p>
+                        {subjects.length === 0 ? (
+                            <div className="mt-6 rounded-xl bg-[#F7F7FF] p-10 text-center">
+                                <p className="text-xl font-semibold">
+                                    📚 No enrolled subjects
+                                </p>
 
-                                    <p className="mt-2 text-gray-500">
-                                        Enroll using the subject code provided by
-                                        your teacher.
-                                    </p>
+                                <p className="mt-2 text-gray-500">
+                                    Enroll using the subject code
+                                    provided by your teacher.
+                                </p>
+
+                                <div className="mt-6 flex justify-center">
+                                    <Button
+                                        text="Enroll in Subject"
+                                        variant="primary"
+                                        onClick={() =>
+                                            setShowEnrollSubject(
+                                                true
+                                            )
+                                        }
+                                    />
                                 </div>
-                            ) : (
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                    {subjects.map((subjectNode) => {
-                                        const subject = subjectNode.subjects;
+                            </div>
+                        ) : (
+                            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                                {subjects.map(
+                                    (subjectNode) => {
+                                        const subject =
+                                            subjectNode.subjects;
 
                                         const stats =
-                                            statsMap[subject.subject_id] || {
+                                            statsMap[
+                                                subject.subject_id
+                                            ] || {
                                                 total: 0,
                                                 attended: 0,
                                             };
 
                                         return (
                                             <StudentSubjectCard
-                                                key={subject.subject_id}
+                                                key={
+                                                    subject.subject_id
+                                                }
                                                 subject={subject}
                                                 stats={stats}
-                                                onUnenroll={handleUnenroll}
+                                                onUnenroll={
+                                                    handleUnenroll
+                                                }
                                             />
                                         );
-                                    })}
-                                </div>
-                            )}
-                        </div>
+                                    }
+                                )}
+                            </div>
+                        )}
                     </div>
                 )}
-
-                {showEnrollModal && (
-                    <EnrollSubject
-                        onClose={() => setShowEnrollModal(false)}
-                        onSubjectEnrolled={handleSubjectEnrolled}
-                    />
-                )}
-                
             </div>
+
+            {showEnrollSubject && (
+                <EnrollSubject
+                    onClose={() =>
+                        setShowEnrollSubject(false)
+                    }
+                    onSubjectEnrolled={
+                        handleSubjectEnrolled
+                    }
+                />
+            )}
         </div>
     );
 }

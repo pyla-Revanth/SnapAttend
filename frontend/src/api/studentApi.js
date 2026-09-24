@@ -53,3 +53,11 @@ export const enrollStudentInSubject = async (subjectCode) => {
 
     return response.data;
 };
+
+export const unenrollStudentFromSubject = async (subjectId) => {
+    const response = await api.delete(
+        `/student/subjects/${subjectId}/enroll`
+    );
+
+    return response.data;
+};
